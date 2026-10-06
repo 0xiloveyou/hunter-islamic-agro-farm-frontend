@@ -37,6 +37,10 @@ lib folder -> holds library
 bun i @react-oauth/google
 
 
+---
+bunx --bun shadcn@latest add toast
+
+
 
 
 
