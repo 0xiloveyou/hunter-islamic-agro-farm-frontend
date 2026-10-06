@@ -39,6 +39,8 @@ bun i @react-oauth/google
 
 ---
 bunx --bun shadcn@latest add toast
+bunx --bun shadcn@latest add tooltip
+
 
 
 
