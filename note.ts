@@ -25,12 +25,16 @@ customize -> get command
 bun add zod @tanstack/react-query @tanstack/react-form ofetch
 
 
+------
+
 
 /// layer architecture  
 
 lib folder -> holds library 
 
+------
 
+bun i @react-oauth/google
 
 
 
