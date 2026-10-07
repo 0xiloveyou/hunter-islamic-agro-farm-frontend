@@ -40,7 +40,9 @@ bun i @react-oauth/google
 ---
 bunx --bun shadcn@latest add toast
 bunx --bun shadcn@latest add tooltip
-
+bunx --bun shadcn@latest add field
+bunx --bun shadcn@latest add input
+bunx --bun shadcn@latest add spinner
 
 
 

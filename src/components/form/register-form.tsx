@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import GoogleLoginComponent from "../modules/google-login/GoogleLogin";
-import { patientRegistrationSchema } from "@/validation";
+import { investorRegistrationSchema } from "@/validation";
 import z from "zod";
 import { useRegistration } from "@/hooks";
 import { toast } from "../ui/toast";
@@ -26,7 +26,7 @@ export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  type PatientDefaultValues = z.infer<typeof patientRegistrationSchema>;
+  type PatientDefaultValues = z.infer<typeof investorRegistrationSchema>;
 
   const defaultValues: PatientDefaultValues = {
     name: "Mir",
@@ -42,15 +42,15 @@ export function RegisterForm() {
   const form = useForm({
     defaultValues,
     validators: {
-      onSubmit: patientRegistrationSchema,
+      onSubmit: investorRegistrationSchema,
     },
     onSubmit: async ({ value }) => {
       const registrationData = {
         name: value.name,
         email: value.email,
         password: value.password,
-        patient: {
-          contactNumber: value.contactNumber,
+        profile: {
+          phone: value.contactNumber,
         },
       };
 
