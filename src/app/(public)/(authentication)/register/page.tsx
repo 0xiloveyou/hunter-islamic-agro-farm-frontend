@@ -11,7 +11,7 @@ export default function RegisterPage() {
           <Link href="/" className="flex items-center gap-2 font-medium">
             <div className="flex items-center gap-2">
               <Logo />
-              <span>PH Healthcare</span>
+              {/* <span></span> */}
             </div>
           </Link>
         </div>

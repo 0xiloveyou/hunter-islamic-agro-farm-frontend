@@ -29,11 +29,11 @@ export function RegisterForm() {
   type PatientDefaultValues = z.infer<typeof investorRegistrationSchema>;
 
   const defaultValues: PatientDefaultValues = {
-    name: "Mir",
-    email: "mir@gmail.com",
-    contactNumber: "01912345678",
-    password: "@User123456",
-    confirmPassword: "@User123456",
+    name: "",
+    email: "",
+    contactNumber: "",
+    password: "",
+    confirmPassword: "",
   };
 
   const { mutate: registration, isPending: registrationPending } =
@@ -73,6 +73,7 @@ export function RegisterForm() {
           router.push(`/register/verify-account?${params.toString()}`);
         },
         onError: (err) => {
+          // console.log(err)
           toast.add({
             title: "Authorization failure",
             description:

@@ -52,7 +52,7 @@ export default function Header() {
       <div className="flex justify-between items-center h-full max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
           <Logo />
-          <span>Hunter Islamic Agro Farm</span>
+          {/* <span></span> */}
         </div>
 
         <nav className="flex gap-5">

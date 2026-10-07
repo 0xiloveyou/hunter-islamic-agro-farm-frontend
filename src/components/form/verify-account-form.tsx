@@ -19,11 +19,7 @@ import { useVerifyAccount } from "@/hooks";
 
 const RESEND_COOLDOWN = 120;
 
-export default function VerifyAccountForm({
-  mode = "investor",
-}: {
-  mode: "investor";
-}) {
+export default function VerifyAccountForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -32,7 +28,6 @@ export default function VerifyAccountForm({
   const [resendTimer, setResendTimer] = useState(RESEND_COOLDOWN);
 
   const { mutate: verifyInvestor } = useVerifyAccount();
-
   const verify = verifyInvestor;
 
   const email = searchParams.get("email") || "";
@@ -68,14 +63,14 @@ export default function VerifyAccountForm({
 
     verify(verifyData, {
       onSuccess: (res) => {
-        if (!res.success) {
-          toast.add({
-            title: "Server Failure",
-            description: "Something went wrong. Please try again",
-            type: "error",
-          });
-        }
-
+       if (!res.success) {
+           toast.add({
+              title: "Server Failure",
+                description: "Something went wrong. Please try again",
+               type: "error",
+              });
+            return;
+           }
 
         toast.add({
           title: "Verification Successful",

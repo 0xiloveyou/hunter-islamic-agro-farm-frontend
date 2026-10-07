@@ -12,14 +12,14 @@ export default function VerifyAccountPage() {
           <Link href="/" className="flex items-center gap-2 font-medium">
             <div className="flex items-center gap-2">
               <Logo />
-              <span>PH Healthcare</span>
+              {/* <span></span> */}
             </div>
           </Link>
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
             <Suspense fallback={<p>Loading...</p>}>
-              <VerifyAccountForm mode="patient" />
+              <VerifyAccountForm  />
             </Suspense>
           </div>
         </div>
