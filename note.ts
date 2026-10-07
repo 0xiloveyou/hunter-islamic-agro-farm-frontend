@@ -43,6 +43,8 @@ bunx --bun shadcn@latest add tooltip
 bunx --bun shadcn@latest add field
 bunx --bun shadcn@latest add input
 bunx --bun shadcn@latest add spinner
+bunx --bun shadcn@latest add card
+bunx --bun shadcn@latest add input-otp
 
 
 
