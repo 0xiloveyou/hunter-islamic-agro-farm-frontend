@@ -11,15 +11,14 @@ import Link from "next/link";
 export default function Header() {
   const routes = [
     { name: "Home", url: "/" },
-    { name: "Doctors", url: "/doctors" },
+    { name: "Project", url: "/projects" },
     { name: "About us", url: "/about-us" },
   ];
 
   const dashboardRoute: Record<UserRole, string> = {
-    SUPER_ADMIN: "/admin",
     ADMIN: "/admin",
-    DOCTOR: "/doctor",
-    PATIENT: "/dashboard",
+    SHARK: "/shark",
+    INVESTOR: "/dashboard",
   };
 
   const { data, isLoading } = useGetMe();
@@ -53,7 +52,7 @@ export default function Header() {
       <div className="flex justify-between items-center h-full max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
           <Logo />
-          <span>PH Healthcare</span>
+          <span>Hunter Islamic Agro Farm</span>
         </div>
 
         <nav className="flex gap-5">
