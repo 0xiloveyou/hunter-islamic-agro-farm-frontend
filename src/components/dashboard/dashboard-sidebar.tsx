@@ -14,15 +14,15 @@ import {
 } from "@/components/ui/sidebar";
 import Logo from "@/assets/svg/Logo";
 import { UserRole } from "@/types";
-import { adminRoutes, doctorRoutes, patientRoutes } from "@/routes";
+import { adminRoutes, } from "@/routes";
 import { SidebarItems } from "@/types/sidebar.type";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const sidebarRoutes: Partial<Record<UserRole, SidebarItems>> = {
   ADMIN: adminRoutes,
-  INVESTOR: investorRoutes,
-  SHARK: sharkRoutes,
+//   INVESTOR: investorRoutes,
+//   SHARK: sharkRoutes,
 };
 
 export function DashboardSidebar({ role }: { role: UserRole }) {
@@ -37,7 +37,7 @@ export function DashboardSidebar({ role }: { role: UserRole }) {
         <Link href="/">
           <div className="flex items-center gap-2">
             <Logo />
-            <span>PH Healthcare</span>
+            {/* <span>Hunter Islamic Agro Farm</span> */}
           </div>
         </Link>
       </SidebarHeader>
