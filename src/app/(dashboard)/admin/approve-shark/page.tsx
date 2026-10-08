@@ -1,13 +1,15 @@
-import DoctorApprovalTabs from "@/components/modules/doctor-approval/doctor-approval-tabs";
+﻿import SharkApprovalTabs from "@/components/shark/shark-approval-tabs";
 
-export default function page() {
+export default function ApproveSharkPage() {
   return (
     <section className="p-5">
-      <div>
-        <h1 className="text-2xl"> Shark approval </h1>
-        <p>Review the Shark application and approve or reject them.</p>
+      <div className="mb-5">
+        <h1 className="text-2xl font-semibold">Shark approval</h1>
+        <p className="text-sm text-muted-foreground">
+          Review investor applications and approve shark access.
+        </p>
       </div>
-      <DoctorApprovalTabs />
+      <SharkApprovalTabs />
     </section>
   );
 }

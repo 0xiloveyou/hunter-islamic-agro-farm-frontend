@@ -1,5 +1,8 @@
-"use client";
+﻿"use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import Logo from "@/assets/svg/Logo";
 import {
   Sidebar,
   SidebarContent,
@@ -12,42 +15,33 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import Logo from "@/assets/svg/Logo";
-import { UserRole } from "@/types";
-import { adminRoutes, } from "@/routes";
-import { SidebarItems } from "@/types/sidebar.type";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { adminRoutes, investorRoutes, sharkRoutes } from "@/routes";
+import type { SidebarItems, UserRole } from "@/types";
 
-const sidebarRoutes: Partial<Record<UserRole, SidebarItems>> = {
+const sidebarRoutes: Record<UserRole, SidebarItems> = {
   ADMIN: adminRoutes,
-//   INVESTOR: investorRoutes,
-//   SHARK: sharkRoutes,
+  INVESTOR: investorRoutes,
+  SHARK: sharkRoutes,
 };
 
 export function DashboardSidebar({ role }: { role: UserRole }) {
   const pathname = usePathname();
-  const routes: SidebarItems = sidebarRoutes[role] || [];
-
-  console.log(pathname);
+  const routes = sidebarRoutes[role];
 
   return (
     <Sidebar>
       <SidebarHeader>
-        <Link href="/">
-          <div className="flex items-center gap-2">
-            <Logo />
-            {/* <span>Hunter Islamic Agro Farm</span> */}
-          </div>
+        <Link href="/" className="flex items-center gap-2">
+          <Logo />
         </Link>
       </SidebarHeader>
       <SidebarContent>
-        {routes.map((item) => (
-          <SidebarGroup key={item.title}>
-            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+        {routes.map((group) => (
+          <SidebarGroup key={group.title}>
+            <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {item.items.map((item) => (
+                {group.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       render={<Link href={item.url} />}

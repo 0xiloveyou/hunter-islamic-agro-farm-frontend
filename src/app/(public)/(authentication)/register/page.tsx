@@ -1,7 +1,6 @@
+import Link from "next/link";
 import Logo from "@/assets/svg/Logo";
 import { RegisterForm } from "@/components/form/register-form";
-
-import Link from "next/link";
 
 export default function RegisterPage() {
   return (

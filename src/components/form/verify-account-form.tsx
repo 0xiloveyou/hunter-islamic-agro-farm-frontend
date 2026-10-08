@@ -1,6 +1,10 @@
 "use client";
 
+import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useVerifyAccount } from "@/hooks";
+import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -9,13 +13,9 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Button } from "../ui/button";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
-import { useEffect, useState } from "react";
-import { REGEXP_ONLY_DIGITS } from "input-otp";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 import { toast } from "../ui/toast";
-import { useVerifyAccount } from "@/hooks";
 
 const RESEND_COOLDOWN = 120;
 
@@ -63,14 +63,14 @@ export default function VerifyAccountForm() {
 
     verify(verifyData, {
       onSuccess: (res) => {
-       if (!res.success) {
-           toast.add({
-              title: "Server Failure",
-                description: "Something went wrong. Please try again",
-               type: "error",
-              });
-            return;
-           }
+        if (!res.success) {
+          toast.add({
+            title: "Server Failure",
+            description: "Something went wrong. Please try again",
+            type: "error",
+          });
+          return;
+        }
 
         toast.add({
           title: "Verification Successful",

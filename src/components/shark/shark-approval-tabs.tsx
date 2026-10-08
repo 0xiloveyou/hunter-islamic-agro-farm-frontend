@@ -1,77 +1,103 @@
-"use client";
+﻿"use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import DoctorApprovalTable from "./doctor-approval-table";
-import { ChangeEvent, Suspense, useState } from "react";
-import SharkApprovalTableLoading from "./shark-approval-table-loading";
-// import { DoctorParams, DoctorVerificationStatus } from "@/types";
-import { Input } from "@/components/ui/input";
-import { SharkVerificationStatus } from "@/types";
-// import DoctorReviewSheet from "./doctor-review-sheet";
-// import useDebounce from "@/hooks/debounce.hook";
-// import TablePagination from "@/components/ui/table-pagination";
+import { CheckCircle2, SearchX } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { toast } from "@/components/ui/toast";
+import { useApproveSharkApplication, useSharkApplications } from "@/hooks";
 
-const verificationStatus: ["ALL" | SharkVerificationStatus, string][] = [
-  ["APPROVED", "Approved"],
-  ["PENDING", "Pending"],
-  ["REJECTED", "Rejected"],
-  ["ALL", "All"],
-];
+function getUserId(application: {
+  userId?: string;
+  id?: string;
+  user?: { id: string };
+}) {
+  return application.userId ?? application.user?.id ?? application.id ?? "";
+}
 
-export default function DoctorApprovalTabs() {
-  const [tab, setTab] = useState<"ALL" | SharkVerificationStatus>("ALL");
-  const [selectedId, setSelectedId] = useState("");
-//   const [searchInput, setSearchInput] = useState("");
-  const [page, setPage] = useState(1);
+export default function SharkApprovalTabs() {
+  const { data, isLoading, isError } = useSharkApplications();
+  const { mutate: approve, isPending } = useApproveSharkApplication();
+  const applications = data?.data ?? [];
 
-//   const debouncedSearch = useDebounce(searchInput);
+  const handleApprove = (userId: string) => {
+    approve(userId, {
+      onSuccess: () =>
+        toast.add({
+          title: "Shark approved",
+          description: "Application has been accepted.",
+          type: "success",
+        }),
+      onError: () =>
+        toast.add({
+          title: "Approval failed",
+          description: "Could not approve this application.",
+          type: "error",
+        }),
+    });
+  };
 
-//   const handleSearch = (e: ChangeEvent<HTMLInputElement, HTMLInputElement>) => {
-//     setSearchInput(e.target.value);
-//     setPage(1);
-//   };
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="py-8 text-sm text-muted-foreground">
+          Loading shark applications...
+        </CardContent>
+      </Card>
+    );
+  }
 
-//   const queryParams: DoctorParams = {
-//     page,
-//     limit: 10,
-//     ...(tab === "ALL" ? {} : { verificationStatus: tab }),
-//     ...(debouncedSearch ? { searchTerm: debouncedSearch } : {}),
-//   };
+  if (isError) {
+    return (
+      <Card>
+        <CardContent className="py-8 text-sm text-destructive">
+          Could not load shark applications.
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!applications.length) {
+    return (
+      <Card>
+        <CardContent className="flex flex-col items-center gap-2 py-12 text-center text-sm text-muted-foreground">
+          <SearchX className="size-5" />
+          No shark applications found.
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
-    <>
-      <div className="flex justify-between my-5">
-        <div>
-          {/* <Input
-            onChange={(e) => handleSearch(e)}
-            type="search"
-            placeholder="Search by name or email"
-          /> */}
-        </div>
-        <Tabs value={tab} onValueChange={(value) => setTab(value)}>
-          <TabsList>
-            {verificationStatus.map(([value, label]) => (
-              <TabsTrigger key={value} value={value}>
-                {label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
-      </div>
+    <div className="grid gap-3">
+      {applications.map((application) => {
+        const userId = getUserId(application);
+        const status =
+          application.status ?? application.verificationStatus ?? "PENDING";
+        const name = application.user?.name ?? application.name ?? "Applicant";
+        const email =
+          application.user?.email ?? application.email ?? "No email provided";
 
-      <Suspense fallback={<DoctorApprovalTableLoading />}>
-        <DoctorApprovalTable
-          {...queryParams}
-          handleReview={setSelectedId}
-          handlePageChange={setPage}
-        />
-      </Suspense>
-
-      <DoctorReviewSheet
-        selectedId={selectedId}
-        onClose={() => setSelectedId("")}
-        {...queryParams}
-      />
-    </>
+        return (
+          <Card key={userId || email}>
+            <CardContent className="flex flex-col gap-4 py-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="font-medium">{name}</p>
+                <p className="text-sm text-muted-foreground">{email}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Status: {status}
+                </p>
+              </div>
+              <Button
+                disabled={!userId || status === "APPROVED" || isPending}
+                onClick={() => handleApprove(userId)}
+              >
+                <CheckCircle2 />{" "}
+                {status === "APPROVED" ? "Approved" : "Accept shark"}
+              </Button>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
   );
 }

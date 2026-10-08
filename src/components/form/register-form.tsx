@@ -5,6 +5,7 @@ import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import type z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -14,12 +15,11 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import GoogleLoginComponent from "../modules/google-login/GoogleLogin";
-import { investorRegistrationSchema } from "@/validation";
-import z from "zod";
 import { useRegistration } from "@/hooks";
-import { toast } from "../ui/toast";
+import { investorRegistrationSchema } from "@/validation";
+import GoogleLoginComponent from "../modules/google-login/GoogleLogin";
 import { Spinner } from "../ui/spinner";
+import { toast } from "../ui/toast";
 
 export function RegisterForm() {
   const router = useRouter();

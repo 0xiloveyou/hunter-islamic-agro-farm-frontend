@@ -1,42 +1,44 @@
-"use client";
+﻿"use client";
 
+import { useQueryClient } from "@tanstack/react-query";
+import { Menu } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 import Logo from "@/assets/svg/Logo";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { useGetMe, useLogout } from "@/hooks";
-import { UserRole } from "@/types";
-import { useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
+import type { UserRole } from "@/types";
+
+const routes = [
+  { name: "Home", url: "/" },
+  { name: "Projects", url: "/projects" },
+  { name: "Shares", url: "/shares" },
+  { name: "Blogs", url: "/blogs" },
+  { name: "FAQs", url: "/faqs" },
+  { name: "About", url: "/about-us" },
+  { name: "Contact", url: "/contact" },
+];
+
+const dashboardRoute: Record<UserRole, string> = {
+  ADMIN: "/admin",
+  SHARK: "/shark",
+  INVESTOR: "/investor",
+};
 
 export default function Header() {
-  const routes = [
-    { name: "Home", url: "/" },
-    { name: "Project", url: "/projects" },
-    { name: "Shares", url: "/shares" },
-    { name: "Blogs", url: "/blogs" },
-    { name: "FAQS", url: "/faqs" },
-    { name: "About us", url: "/about-us" },
-    { name: "Contact", url: "/contact" },
-  ];
-
-  const dashboardRoute: Record<UserRole, string> = {
-    ADMIN: "/admin",
-    SHARK: "/shark",
-    INVESTOR: "/dashboard",
-  };
-
+  const [open, setOpen] = useState(false);
   const { data, isLoading } = useGetMe();
   const { mutate: logout } = useLogout();
   const queryClient = useQueryClient();
-
-  const role: UserRole = !!data?.data && data?.data.role;
+  const role = data?.data?.role as UserRole | undefined;
 
   const handleLogout = () => {
     logout(undefined, {
       onSuccess: () => {
         toast.add({
-          title: "Tata",
-          description: "Logged out successfully",
+          title: "Logged out",
+          description: "You have been signed out successfully.",
           type: "success",
         });
         queryClient.removeQueries({ queryKey: ["user"] });
@@ -44,7 +46,7 @@ export default function Header() {
       onError: () => {
         toast.add({
           title: "Logout failed",
-          description: "Something Went Wrong",
+          description: "Something went wrong.",
           type: "error",
         });
       },
@@ -52,27 +54,30 @@ export default function Header() {
   };
 
   return (
-    <header className="w-full h-16 border border-b">
-      <div className="flex justify-between items-center h-full max-w-7xl mx-auto">
-        <div className="flex items-center gap-2">
+    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+        <Link href="/" className="flex items-center gap-2">
           <Logo />
-          {/* <span></span> */}
-        </div>
+        </Link>
 
-        <nav className="flex gap-5">
+        <nav className="hidden items-center gap-5 text-sm md:flex">
           {routes.map((route) => (
-            <Link key={route.url} href={route.url}>
+            <Link
+              key={route.url}
+              href={route.url}
+              className="text-muted-foreground transition hover:text-foreground"
+            >
               {route.name}
             </Link>
           ))}
-
           {role && <Link href={dashboardRoute[role]}>Dashboard</Link>}
         </nav>
-        <div>
+
+        <div className="hidden items-center gap-2 md:flex">
           {!isLoading && !data && (
             <Button
               variant="outline"
-              render={<Link href="/login">Login</Link>}
+              render={<Link href="/login" />}
               nativeButton={false}
             >
               Login
@@ -84,7 +89,33 @@ export default function Header() {
             </Button>
           )}
         </div>
+
+        <Button
+          className="md:hidden"
+          variant="ghost"
+          size="icon"
+          onClick={() => setOpen((value) => !value)}
+        >
+          <Menu />
+        </Button>
       </div>
+
+      {open && (
+        <div className="border-t bg-background px-4 py-3 md:hidden">
+          <nav className="grid gap-3 text-sm">
+            {routes.map((route) => (
+              <Link
+                key={route.url}
+                href={route.url}
+                onClick={() => setOpen(false)}
+              >
+                {route.name}
+              </Link>
+            ))}
+            {role && <Link href={dashboardRoute[role]}>Dashboard</Link>}
+          </nav>
+        </div>
+      )}
     </header>
   );
 }

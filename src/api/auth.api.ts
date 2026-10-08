@@ -1,5 +1,5 @@
 import apiClient from "@/lib/apiClient";
-import {
+import type {
   LoginPayload,
   RegistrationPayload,
   VerifyAccountPayload,
