@@ -20,10 +20,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const sidebarRoutes: Partial<Record<UserRole, SidebarItems>> = {
-  SUPER_ADMIN: adminRoutes,
   ADMIN: adminRoutes,
-  DOCTOR: doctorRoutes,
-  PATIENT: patientRoutes,
+  INVESTOR: investorRoutes,
+  SHARK: sharkRoutes,
 };
 
 export function DashboardSidebar({ role }: { role: UserRole }) {
