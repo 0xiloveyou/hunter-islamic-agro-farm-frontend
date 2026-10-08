@@ -3,7 +3,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 // import DoctorApprovalTable from "./doctor-approval-table";
 import { ChangeEvent, Suspense, useState } from "react";
-import DoctorApprovalTableLoading from "./doctor-approval-table-loading";
+import SharkApprovalTableLoading from "./shark-approval-table-loading";
 // import { DoctorParams, DoctorVerificationStatus } from "@/types";
 import { Input } from "@/components/ui/input";
 import { SharkVerificationStatus } from "@/types";

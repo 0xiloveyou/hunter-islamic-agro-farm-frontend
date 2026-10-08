@@ -9,8 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import TablePagination from "@/components/ui/table-pagination";
-import { useSuspenseGetAllDoctors } from "@/hooks";
+// import TablePagination from "@/components/ui/table-pagination";
+import { getAllSharkRequest } from "@/hooks";
 import type { DoctorParams } from "@/types";
 
 interface Props extends DoctorParams {

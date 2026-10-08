@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-export default function DoctorApprovalTableLoading() {
+export default function SharkApprovalTableLoading() {
   return (
     <div className="border rounded-lg">
       <Table>
