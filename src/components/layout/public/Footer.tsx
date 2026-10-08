@@ -13,13 +13,13 @@ const quickLinks = [
 const legalLinks = [
   {
     label: "Terms & Condition",
-    href: "https://theafricandreams.com/terms-condition/",
+    href: "",
   },
   {
     label: "Privacy Policy",
-    href: "https://theafricandreams.com/privacy-policy-2/",
+    href: "",
   },
-  { label: "Disclaimer", href: "https://theafricandreams.com/disclaimer/" },
+  { label: "Disclaimer", href: "" },
 ];
 
 export default function Footer() {

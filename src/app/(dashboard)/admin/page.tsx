@@ -13,16 +13,66 @@ import {
   useApproveAppointment,
   useCreateProject,
   useCreateSchedule,
+  useProjects,
 } from "@/hooks";
+import { formatCurrency } from "@/lib/dashboard-money";
 
-const metricKeys = [
-  ["totalUsers", "Users"],
-  ["totalInvestors", "Investors"],
-  ["totalSharks", "Sharks"],
-  ["totalProjects", "Projects"],
-  ["totalPurchasedShares", "Purchased shares"],
-  ["verifiedInvestmentAmount", "Verified investment"],
+const metricCards = [
+  { keys: ["totalUsers", "users", "userCount"], label: "Users" },
+  {
+    keys: ["totalInvestors", "investors", "investorCount"],
+    label: "Investors",
+  },
+  { keys: ["totalSharks", "sharks", "sharkCount"], label: "Sharks" },
+  {
+    keys: ["totalPurchasedShares", "purchasedShares", "shareCount"],
+    label: "Purchased shares",
+  },
 ] as const;
+
+const spendingKeys = [
+  "verifiedInvestmentAmount",
+  "totalInvestmentAmount",
+  "totalInvestedAmount",
+  "totalSpentAmount",
+  "totalSpendAmount",
+  "totalPurchaseAmount",
+  "fundedAmount",
+] as const;
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value as Record<string, unknown>;
+  }
+
+  return null;
+}
+
+function findNumber(value: unknown, keys: readonly string[]): number {
+  const record = asRecord(value);
+
+  if (!record) {
+    return 0;
+  }
+
+  for (const key of keys) {
+    const amount = Number(record[key] ?? 0);
+
+    if (Number.isFinite(amount) && amount > 0) {
+      return amount;
+    }
+  }
+
+  for (const nestedValue of Object.values(record)) {
+    const amount = findNumber(nestedValue, keys);
+
+    if (amount > 0) {
+      return amount;
+    }
+  }
+
+  return 0;
+}
 
 export default function AdminDashboard() {
   const [scheduledAt, setScheduledAt] = useState("");
@@ -30,12 +80,18 @@ export default function AdminDashboard() {
   const [selectedAppointment, setSelectedAppointment] = useState("");
   const { data: analytics } = useAdminAnalytics();
   const { data: appointments } = useAppointmentRequests();
+  const { data: projects } = useProjects({ page: 1, limit: 1 });
   const { mutate: createSchedule, isPending: isCreatingSchedule } =
     useCreateSchedule();
   const { mutate: approveAppointment, isPending: isApprovingAppointment } =
     useApproveAppointment();
   const { mutate: createProject, isPending: isCreatingProject } =
     useCreateProject();
+
+  const projectCount =
+    projects?.meta?.total ??
+    findNumber(analytics?.data, ["totalProjects", "projects", "projectCount"]);
+  const spendingTotal = findNumber(analytics?.data, spendingKeys);
 
   const handleSchedule = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -53,7 +109,9 @@ export default function AdminDashboard() {
 
   const handleProject = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
     createProject(
       {
         title: String(formData.get("title")),
@@ -67,7 +125,7 @@ export default function AdminDashboard() {
       },
       {
         onSuccess: () => {
-          event.currentTarget.reset();
+          form.reset();
           toast.add({ title: "Project created", type: "success" });
         },
         onError: () => toast.add({ title: "Project failed", type: "error" }),
@@ -99,16 +157,32 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid gap-3 md:grid-cols-3">
-        {metricKeys.map(([key, label]) => (
-          <Card key={key}>
+        {metricCards.map((metric) => (
+          <Card key={metric.label}>
             <CardHeader>
-              <CardTitle>{label}</CardTitle>
+              <CardTitle>{metric.label}</CardTitle>
             </CardHeader>
             <CardContent className="text-2xl font-semibold">
-              {Number(analytics?.data?.[key] ?? 0).toLocaleString()}
+              {findNumber(analytics?.data, metric.keys).toLocaleString()}
             </CardContent>
           </Card>
         ))}
+        <Card>
+          <CardHeader>
+            <CardTitle>Projects</CardTitle>
+          </CardHeader>
+          <CardContent className="text-2xl font-semibold">
+            {projectCount.toLocaleString()}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Total spending</CardTitle>
+          </CardHeader>
+          <CardContent className="text-2xl font-semibold">
+            {formatCurrency(spendingTotal)}
+          </CardContent>
+        </Card>
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">

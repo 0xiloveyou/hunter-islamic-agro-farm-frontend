@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/components/ui/toast";
 import { useApplyAsShark, useMyPayments, useMyShares } from "@/hooks";
+import { formatCurrency, getTotalSpendAmount } from "@/lib/dashboard-money";
 
 export default function InvestorDashboard() {
   const { data: shares } = useMyShares();
   const { data: payments } = useMyPayments();
   const { mutate: applyAsShark, isPending } = useApplyAsShark();
+  const totalSpend = getTotalSpendAmount(shares?.data, payments?.data);
 
   const handleApply = () => {
     applyAsShark(undefined, {
@@ -49,10 +51,10 @@ export default function InvestorDashboard() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Total invested</CardTitle>
+            <CardTitle>Total spending</CardTitle>
           </CardHeader>
           <CardContent className="text-2xl font-semibold">
-            ${Number(shares?.data?.totalInvestedAmount ?? 0).toLocaleString()}
+            {formatCurrency(totalSpend)}
           </CardContent>
         </Card>
         <Card>

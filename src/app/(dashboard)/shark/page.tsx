@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { CalendarCheck, CreditCard } from "lucide-react";
+import { CalendarCheck, CreditCard, WalletCards } from "lucide-react";
 import Link from "next/link";
 import { type FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -8,17 +8,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
-import { useBookAppointment, useMyAppointment, useSchedules } from "@/hooks";
+import {
+  useBookAppointment,
+  useMyAppointment,
+  useMyPayments,
+  useMyShares,
+  useSchedules,
+} from "@/hooks";
+import { formatCurrency, getTotalSpendAmount } from "@/lib/dashboard-money";
 
 export default function SharkDashboard() {
   const [scheduleId, setScheduleId] = useState("");
   const { data: schedules } = useSchedules();
   const { data: appointment } = useMyAppointment();
+  const { data: shares } = useMyShares();
+  const { data: payments } = useMyPayments();
   const { mutate: bookAppointment, isPending } = useBookAppointment();
+  const totalSpend = getTotalSpendAmount(shares?.data, payments?.data);
 
   const handleBook = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
     bookAppointment(
       {
         scheduleId,
@@ -26,8 +38,11 @@ export default function SharkDashboard() {
         notes: String(formData.get("notes")),
       },
       {
-        onSuccess: () =>
-          toast.add({ title: "Appointment requested", type: "success" }),
+        onSuccess: () => {
+          setScheduleId("");
+          form.reset();
+          toast.add({ title: "Appointment requested", type: "success" });
+        },
         onError: () => toast.add({ title: "Booking failed", type: "error" }),
       },
     );
@@ -40,6 +55,33 @@ export default function SharkDashboard() {
         <p className="text-sm text-muted-foreground">
           Book admin appointments and buy higher-value project shares.
         </p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle>Total shares</CardTitle>
+          </CardHeader>
+          <CardContent className="text-2xl font-semibold">
+            {shares?.data?.totalShares ?? 0}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Total spending</CardTitle>
+          </CardHeader>
+          <CardContent className="text-2xl font-semibold">
+            {formatCurrency(totalSpend)}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Payments</CardTitle>
+          </CardHeader>
+          <CardContent className="text-2xl font-semibold">
+            {payments?.data?.length ?? 0}
+          </CardContent>
+        </Card>
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[1fr_360px]">
@@ -122,7 +164,7 @@ export default function SharkDashboard() {
             checkout.
           </p>
           <Button render={<Link href="/shares" />} nativeButton={false}>
-            Buy shark share
+            <WalletCards /> Buy shark share
           </Button>
         </CardContent>
       </Card>

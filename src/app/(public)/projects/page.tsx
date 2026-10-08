@@ -42,6 +42,10 @@ function formatMoney(amount: number, currency: string) {
   }).format(amount);
 }
 
+function isLocalImage(src: string) {
+  return src.startsWith("/");
+}
+
 export default function ProjectsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const { data, isLoading, isError } = useProjects({
@@ -87,40 +91,51 @@ export default function ProjectsPage() {
           )}
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {projects.map((project) => (
-              <Card key={project.id} className="overflow-hidden">
-                <div className="relative aspect-[16/9] bg-muted">
-                  <Image
-                    src={project.imageUrl || "/3463766.jpg"}
-                    alt={project.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <CardHeader>
-                  <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
-                    <span className="inline-flex items-center gap-1">
-                      <MapPin className="size-3" />
-                      {project.location}
-                    </span>
-                    <span>{project.status ?? "FUNDING"}</span>
+            {projects.map((project) => {
+              const imageUrl = project.imageUrl || "/3463766.jpg";
+
+              return (
+                <Card key={project.id} className="overflow-hidden">
+                  <div className="relative aspect-[16/9] bg-muted">
+                    {isLocalImage(imageUrl) ? (
+                      <Image
+                        src={imageUrl}
+                        alt={project.title}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <img
+                        src={imageUrl}
+                        alt={project.title}
+                        className="h-full w-full object-cover"
+                      />
+                    )}
                   </div>
-                  <CardTitle>{project.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3 text-sm leading-6 text-muted-foreground">
-                  <p>{project.description}</p>
-                  <p className="font-medium text-foreground">
-                    Total cost:{" "}
-                    {formatMoney(project.totalCost, project.currency)}
-                  </p>
-                </CardContent>
-                <CardFooter>
-                  <Button render={<Link href="/shares" />} nativeButton={false}>
-                    Buy shares <ArrowRight />
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+                  <CardHeader>
+                    <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
+                      <span className="inline-flex items-center gap-1">
+                        <MapPin className="size-3" />
+                        {project.location}
+                      </span>
+                      <span>{project.status ?? "FUNDING"}</span>
+                    </div>
+                    <CardTitle>{project.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-sm leading-6 text-muted-foreground">
+                    <p>{project.description}</p>
+                    <p className="font-medium text-foreground">
+                      Total cost: {formatMoney(project.totalCost, project.currency)}
+                    </p>
+                  </CardContent>
+                  <CardFooter>
+                    <Button render={<Link href="/shares" />} nativeButton={false}>
+                      Buy shares <ArrowRight />
+                    </Button>
+                  </CardFooter>
+                </Card>
+              );
+            })}
           </div>
         </section>
       </main>

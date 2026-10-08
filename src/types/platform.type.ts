@@ -113,6 +113,12 @@ export interface Payment {
 export interface ShareSummary {
   totalShares?: number;
   totalInvestedAmount?: number;
+  totalSpentAmount?: number;
+  totalSpendAmount?: number;
+  totalInvestmentAmount?: number;
+  verifiedInvestmentAmount?: number;
+  totalAmount?: number;
+  amount?: number;
   shares?: unknown[];
 }
 
@@ -133,3 +139,4 @@ export interface AdminAnalytics {
   projectStatusCounts?: Record<string, number>;
   paymentsByStatus?: Record<string, number>;
 }
+

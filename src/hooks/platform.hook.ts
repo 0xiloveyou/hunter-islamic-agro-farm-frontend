@@ -30,7 +30,10 @@ export function useCreateProject() {
 
   return useMutation({
     mutationFn: createProject,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["projects"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-analytics"] });
+    },
   });
 }
 
@@ -65,7 +68,10 @@ export function useCreateSchedule() {
 
   return useMutation({
     mutationFn: createSchedule,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["schedules"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["schedules"] });
+      queryClient.invalidateQueries({ queryKey: ["appointment-requests"] });
+    },
   });
 }
 
@@ -140,3 +146,4 @@ export function useMyShares() {
     queryFn: getMyShares,
   });
 }
+
