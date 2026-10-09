@@ -66,10 +66,7 @@ export default function ProjectsPage() {
           <div className="mb-8 grid gap-5 md:grid-cols-[1fr_360px] md:items-end">
             <div>
               <h1 className="text-3xl font-semibold">Projects</h1>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-                Public agro investment projects fetched from the backend, with
-                fallback sample content while the API is offline.
-              </p>
+              
             </div>
             <Input
               value={searchTerm}

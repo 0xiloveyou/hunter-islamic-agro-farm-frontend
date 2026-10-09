@@ -48,7 +48,7 @@ bunx --bun shadcn@latest add input-otp
 bunx --bun shadcn@latest add sidebar
 bunx --bun shadcn@latest add tabs
 bunx --bun shadcn@latest add table
-
+bunx --bun shadcn@latest add pagination
 
 
 
