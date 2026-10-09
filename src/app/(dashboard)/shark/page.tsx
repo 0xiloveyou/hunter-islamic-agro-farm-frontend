@@ -27,26 +27,77 @@ export default function SharkDashboard() {
   const totalSpend = getTotalSpendAmount(shares?.data, payments?.data);
 
   const handleBook = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const formData = new FormData(form);
+  event.preventDefault();
 
-    bookAppointment(
-      {
-        scheduleId,
-        purpose: String(formData.get("purpose")),
-        notes: String(formData.get("notes")),
-      },
-      {
-        onSuccess: () => {
-          setScheduleId("");
-          form.reset();
-          toast.add({ title: "Appointment requested", type: "success" });
-        },
-        onError: () => toast.add({ title: "Booking failed", type: "error" }),
-      },
-    );
+  const form = event.currentTarget;
+  const formData = new FormData(form);
+
+  const purpose = String(formData.get("purpose") ?? "").trim();
+  const notes = String(formData.get("notes") ?? "").trim();
+
+  if (!scheduleId) {
+    toast.add({
+      title: "Please select an available schedule.",
+      type: "error",
+    });
+    return;
+  }
+
+  if (!purpose) {
+    toast.add({
+      title: "Please enter the appointment purpose.",
+      type: "error",
+    });
+    return;
+  }
+
+  const payload = {
+    scheduleId,
+    purpose,
+    notes,
   };
+
+  console.log("Booking appointment with payload:", payload);
+
+  bookAppointment(payload, {
+    onSuccess: (response) => {
+      console.log("Booking response:", response);
+
+      setScheduleId("");
+      form.reset();
+
+      toast.add({
+        title: "Appointment requested successfully!",
+        type: "success",
+      });
+    },
+
+    onError: (error) => {
+      console.error("Appointment booking failed:", error);
+
+      const apiError = error as Error & {
+        data?: {
+          message?: string;
+        };
+        response?: {
+          _data?: {
+            message?: string;
+          };
+        };
+      };
+
+      toast.add({
+        title: "Booking failed",
+        description:
+          apiError.data?.message ??
+          apiError.response?._data?.message ??
+          apiError.message ??
+          "An unexpected error occurred.",
+        type: "error",
+      });
+    },
+  });
+};
 
   return (
     <section className="space-y-5 p-5">
@@ -117,9 +168,12 @@ export default function SharkDashboard() {
                 placeholder="Notes"
                 defaultValue="I would like to discuss the agricultural investment projects."
               />
-              <Button disabled={!scheduleId || isPending}>
-                {isPending ? "Booking..." : "Book appointment"}
-              </Button>
+              <Button
+  type="submit"
+  disabled={!scheduleId || isPending}
+>
+  {isPending ? "Booking..." : "Book appointment"}
+</Button>
             </form>
           </CardContent>
         </Card>

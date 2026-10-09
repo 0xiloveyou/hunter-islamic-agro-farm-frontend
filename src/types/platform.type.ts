@@ -37,14 +37,13 @@ export interface ProjectParams {
 export interface CreateProjectPayload {
   title: string;
   description: string;
-  imageUrl: string;
-  location: string;
+  imageUrl?: string;
+  location?: string;
   totalCost: number;
-  currency: string;
-  startDate: string;
-  endDate: string;
+  currency?: string;
+  startDate?: string;
+  endDate?: string;
 }
-
 export type SharkApplicationStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 export interface SharkApplication {

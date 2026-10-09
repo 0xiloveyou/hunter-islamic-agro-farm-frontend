@@ -106,9 +106,22 @@ export function useBookAppointment() {
 
   return useMutation({
     mutationFn: bookAppointment,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["schedules"] });
-      queryClient.invalidateQueries({ queryKey: ["my-appointment"] });
+
+    onSuccess: async (response) => {
+      console.log("Appointment booked successfully:", response);
+
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["schedules"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["my-appointment"],
+        }),
+      ]);
+    },
+
+    onError: (error) => {
+      console.error("Book appointment API failed:", error);
     },
   });
 }

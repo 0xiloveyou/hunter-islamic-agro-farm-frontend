@@ -88,13 +88,10 @@ export function getProjects(params?: ProjectParams) {
 }
 
 export function createProject(payload: CreateProjectPayload) {
-  return requestWithFallback<ApiResponse<Project>>(
-    ["/projects", "/v1/projects"],
-    {
-      method: "POST",
-      body: payload,
-    },
-  );
+  return apiClient<ApiResponse<Project>>("/projects", {
+    method: "POST",
+    body: payload,
+  });
 }
 
 export function getAdminAnalytics() {

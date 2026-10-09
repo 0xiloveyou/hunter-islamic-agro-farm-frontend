@@ -122,7 +122,7 @@ export default function HomePage() {
           <div>
             <Leaf className="mb-4 size-7" />
             <h2 className="text-2xl font-semibold">
-              A short path from interest to investment
+              From Vision to Ethical Investment
             </h2>
           </div>
           <p className="text-sm leading-7 text-muted-foreground">
