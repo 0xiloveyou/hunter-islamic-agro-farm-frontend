@@ -4,6 +4,7 @@ import { ArrowRight, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+
 import Footer from "@/components/layout/public/Footer";
 import Header from "@/components/layout/public/Header";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import useDebounce from "@/hooks/debounce.hook";
 import { useProjects } from "@/hooks";
 import type { Project } from "@/types";
 
@@ -48,10 +50,14 @@ function isLocalImage(src: string) {
 
 export default function ProjectsPage() {
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Debounce the search input before making API requests.
+  const debouncedSearch = useDebounce(searchTerm);
+
   const { data, isLoading, isError } = useProjects({
     page: 1,
     limit: 20,
-    searchTerm,
+    searchTerm: debouncedSearch,
     sortBy: "createdAt",
     sortOrder: "desc",
   });
@@ -61,13 +67,17 @@ export default function ProjectsPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
+
       <main className="flex-1">
         <section className="mx-auto max-w-7xl px-4 py-14">
           <div className="mb-8 grid gap-5 md:grid-cols-[1fr_360px] md:items-end">
             <div>
               <h1 className="text-3xl font-semibold">Projects</h1>
-              
+              <p className="mt-2 text-sm text-muted-foreground">
+                Explore our agricultural investment projects.
+              </p>
             </div>
+
             <Input
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
@@ -81,9 +91,16 @@ export default function ProjectsPage() {
               Could not reach the project API, showing sample project data.
             </p>
           )}
+
           {isLoading && (
             <p className="mb-4 text-sm text-muted-foreground">
               Loading projects...
+            </p>
+          )}
+
+          {!isLoading && !isError && projects.length === 0 && (
+            <p className="py-10 text-center text-sm text-muted-foreground">
+              No projects found.
             </p>
           )}
 
@@ -109,24 +126,34 @@ export default function ProjectsPage() {
                       />
                     )}
                   </div>
+
                   <CardHeader>
                     <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
                       <span className="inline-flex items-center gap-1">
                         <MapPin className="size-3" />
                         {project.location}
                       </span>
+
                       <span>{project.status ?? "FUNDING"}</span>
                     </div>
+
                     <CardTitle>{project.title}</CardTitle>
                   </CardHeader>
+
                   <CardContent className="space-y-3 text-sm leading-6 text-muted-foreground">
                     <p>{project.description}</p>
+
                     <p className="font-medium text-foreground">
-                      Total cost: {formatMoney(project.totalCost, project.currency)}
+                      Total cost:{" "}
+                      {formatMoney(project.totalCost, project.currency)}
                     </p>
                   </CardContent>
+
                   <CardFooter>
-                    <Button render={<Link href="/shares" />} nativeButton={false}>
+                    <Button
+                      render={<Link href="/shares" />}
+                      nativeButton={false}
+                    >
                       Buy shares <ArrowRight />
                     </Button>
                   </CardFooter>
@@ -136,7 +163,9 @@ export default function ProjectsPage() {
           </div>
         </section>
       </main>
+
       <Footer />
     </div>
   );
 }
+
