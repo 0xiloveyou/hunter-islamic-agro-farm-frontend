@@ -34,9 +34,9 @@ export default function VerifyAccountForm() {
 
   useEffect(() => {
     if (!email) {
-      router.push("/");
+      router.replace("/");
     }
-  }, [email]);
+  }, [email, router]);
 
   useEffect(() => {
     if (resendTimer <= 0) {
