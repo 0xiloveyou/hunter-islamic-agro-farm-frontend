@@ -107,24 +107,19 @@ export function useBookAppointment() {
   return useMutation({
     mutationFn: bookAppointment,
 
-    onSuccess: async (response) => {
-      console.log("Appointment booked successfully:", response);
-
+    onSuccess: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: ["schedules"],
-        }),
         queryClient.invalidateQueries({
           queryKey: ["my-appointment"],
         }),
+        queryClient.invalidateQueries({
+          queryKey: ["schedules"],
+        }),
       ]);
-    },
-
-    onError: (error) => {
-      console.error("Book appointment API failed:", error);
     },
   });
 }
+
 
 export function useMyAppointment() {
   return useQuery({
@@ -133,6 +128,8 @@ export function useMyAppointment() {
     retry: false,
   });
 }
+;
+
 
 export function useApplyAsShark() {
   return useMutation({

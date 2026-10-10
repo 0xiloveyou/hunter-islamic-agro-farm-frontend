@@ -171,11 +171,26 @@ export function bookAppointment(payload: BookAppointmentPayload) {
   });
 }
 
-export function getMyAppointment() {
-  return apiClient<ApiResponse<Appointment>>("/user/my-appointment", {
-    method: "POST",
-  });
+
+export async function getMyAppointment() {
+  try {
+    const response = await apiClient<ApiResponse<Appointment>>(
+      "/user/my-appointment",
+      {
+        method: "GET",
+      },
+    );
+
+    console.log("[getMyAppointment] Success:", response);
+
+    return response;
+  } catch (error) {
+    console.error("[getMyAppointment] Failed:", error);
+    throw error;
+  }
 }
+;
+
 
 export function applyAsShark() {
   return apiClient<ApiResponse<SharkApplication>>("/user/apply-as-shark", {

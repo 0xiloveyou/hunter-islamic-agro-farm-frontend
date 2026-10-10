@@ -68,14 +68,22 @@ export interface Schedule {
 
 export interface Appointment {
   id: string;
-  scheduleId?: string;
-  purpose?: string | null;
-  notes?: string | null;
-  appointmentUrl?: string | null;
-  status?: "PENDING" | "APPROVED" | "REJECTED";
-  user?: User;
-  schedule?: Schedule;
-  createdAt?: string;
+  userId: string;
+  scheduleId: string;
+  purpose: string | null;
+  notes: string | null;
+  status: string;
+  appointmentUrl: string | null;
+  documentUrl: string | null;
+  createdAt: string;
+  updatedAt: string;
+
+  schedule?: {
+    id: string;
+    scheduledAt: string;
+    duration: number;
+    isBooked: boolean;
+  };
 }
 
 export interface BookAppointmentPayload {
