@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { Menu } from "lucide-react";
 import Link from "next/link";
@@ -32,26 +33,45 @@ export default function Header() {
   const { mutate: logout } = useLogout();
   const queryClient = useQueryClient();
   const role = data?.data?.role as UserRole | undefined;
+  const router = useRouter();
+const handleLogout = () => {
+logout(undefined, {
+onSuccess: async () => {
+// Stop any ongoing user query.
+await queryClient.cancelQueries({
+queryKey: ["user"],
+});
 
-  const handleLogout = () => {
-    logout(undefined, {
-      onSuccess: () => {
-        toast.add({
-          title: "Logged out",
-          description: "You have been signed out successfully.",
-          type: "success",
-        });
-        queryClient.removeQueries({ queryKey: ["user"] });
-      },
-      onError: () => {
-        toast.add({
-          title: "Logout failed",
-          description: "Something went wrong.",
-          type: "error",
-        });
-      },
-    });
-  };
+
+  // Remove cached user data.
+  queryClient.removeQueries({
+    queryKey: ["user"],
+  });
+
+  // Prevent stale user data from being used.
+  queryClient.setQueryData(["auth", "loggedOut"], true);
+
+  toast.add({
+    title: "Logged out",
+    description: "You have been signed out successfully.",
+    type: "success",
+  });
+
+  router.replace("/login");
+},
+
+onError: () => {
+  toast.add({
+    title: "Logout failed",
+    description: "Something went wrong.",
+    type: "error",
+  });
+},
+
+
+});
+};
+
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
